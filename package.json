@@ -1,0 +1,38 @@
+{
+  "name": "concatpdf",
+  "version": "1.0.0",
+  "description": "A CLI program to concat PDF's",
+  "main": "src/index.js",
+  "bin": {
+    "concatpdf": "src/index.js",
+    "cpdf": "src/index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edersonferreira/concatpdf.git"
+  },
+  "keywords": [
+    "PDF",
+    "CLI",
+    "CLI",
+    "Program",
+    "Concat",
+    "pdf",
+    "merge",
+    "pdf"
+  ],
+  "author": "Ederson Ferreira",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/edersonferreira/concatpdf/issues"
+  },
+  "homepage": "https://github.com/edersonferreira/concatpdf#readme",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "minimist": "^1.2.5",
+    "pdf-lib": "^1.10.0"
+  }
+}
