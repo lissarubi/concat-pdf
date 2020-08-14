@@ -11,60 +11,58 @@ argv.p != undefined
   ? (path = argv.path)
   : (path = 'merged.pdf');
 
-async function mergePdf() {
-  if (argv.f != undefined) {
-    let fileNames = argv.f.split(',');
-    const files = Array();
-    for (i = 0; i < fileNames.length; i++) {
-      let currentFile = fileNames[i].replace(/\s+/g, '');
-      files.push(fs.readFileSync(currentFile));
+async function mergePdf(before = '', after = '') {
+  let fileNames = Array();
+
+  // set the first input file to be the middle of PDF
+  fileNames.push(argv._[0]);
+
+  // get the PDF's before
+  if (before != '') {
+    const beforeArray = before.split(',').reverse();
+
+    for (i = 0; i < beforeArray.length; i++) {
+      fileNames.unshift(beforeArray[i].replace(/\s+/g, ''));
     }
+  }
 
-    const mergedPdf = await PDFDocument.create();
-    for (const pdfBytes of files) {
-      const pdf = await PDFDocument.load(pdfBytes);
-      const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-      copiedPages.forEach((page) => {
-        mergedPdf.addPage(page);
-      });
+  // get the PDF's after
+  if (after != '') {
+    const afterArray = after.split(',');
+
+    for (i = 0; i < afterArray.length; i++) {
+      fileNames.push(afterArray[i].replace(/\s+/g, ''));
     }
+  }
+  const files = Array();
 
-    const buf = await mergedPdf.save(); // Uint8Array
-
-    fs.open(path, 'w', function (err, fd) {
-      fs.write(fd, buf, 0, buf.length, null, function (err) {
-        fs.close(fd, function () {
-          console.log('wrote the PDF successfully'.green.bold);
-        });
-      });
+  // create PDF based in the input PDF's
+  for (i = 0; i < fileNames.length; i++) {
+    let currentFile = fileNames[i].replace(/\s+/g, '');
+    files.push(fs.readFileSync(currentFile));
+  }
+  const mergedPdf = await PDFDocument.create();
+  for (const pdfBytes of files) {
+    const pdf = await PDFDocument.load(pdfBytes);
+    const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+    copiedPages.forEach((page) => {
+      mergedPdf.addPage(page);
     });
   }
-  if (argv.files != undefined) {
-    let fileNames = argv.files.split(',');
-    const files = Array();
-    for (i = 0; i < fileNames.length; i++) {
-      let currentFile = fileNames[i].replace(/\s+/g, '');
-      files.push(fs.readFileSync(currentFile));
-    }
 
-    const mergedPdf = await PDFDocument.create();
-    for (const pdfBytes of files) {
-      const pdf = await PDFDocument.load(pdfBytes);
-      const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-      copiedPages.forEach((page) => {
-        mergedPdf.addPage(page);
-      });
-    }
+  const buf = await mergedPdf.save(); // Uint8Array
 
-    const buf = await mergedPdf.save(); // Uint8Array
-
-    fs.open(path, 'w', function (err, fd) {
-      fs.write(fd, buf, 0, buf.length, null, function (err) {
-        fs.close(fd, function () {
-          console.log('wrote the PDF successfully'.green.bold);
-        });
-      });
+  fs.open(path, 'w', function (err, fd) {
+    fs.write(fd, buf, 0, buf.length, null, function (err) {
+      fs.close(fd, function () {});
     });
-  }
+  });
 }
-mergePdf();
+
+if (argv.b != undefined && argv.a != undefined) {
+  mergePdf(argv.b, argv.a);
+} else if (argv.b != undefined) {
+  mergePdf(argv.b);
+} else if (argv.a != undefined) {
+  mergePdf('', argv.a);
+}
