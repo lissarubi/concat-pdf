@@ -15,7 +15,7 @@
     "url": "git+https://github.com/edersonferreira/concatpdf.git"
   },
   "keywords": ["PDF", "CLI", "CLI", "Program", "Concat", "pdf", "merge", "pdf"],
-  "author": "Ederson Ferreira",
+  "author": "Lissa Ferreira",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/edersonferreira/concatpdf/issues"
